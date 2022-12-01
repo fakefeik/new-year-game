@@ -110,6 +110,7 @@ export function update(state: GameState, previousTime: number, currentTime: numb
     state.presents = state.presents.filter(x => !state.gameOver && x.y <= CHIMNEY + 30);
 
     let dt = (currentTime - previousTime) * multiplyer(state.totalJumps);
+    dt *= 0.1;
     const floor = currentMin(state.current);
     if (state.santa.height > floor || state.santa.height >= floor && floor < SANTA_BASELINE - 10) {
         state.gameOver = true;

@@ -11,8 +11,8 @@ import roofMiddleChimneyImg from "./roof_middle_chimney.png";
 
 export type RoofType = "start" | "middle" | "end";
 
-export const CHIMNEY_WIDTH = 108;
-export const CHIMNEY_HEIGHT = 116
+export const CHIMNEY_WIDTH = 105;
+export const CHIMNEY_HEIGHT = 100
 
 export interface Roof {
     img: HTMLImageElement,
@@ -62,7 +62,7 @@ roofLeftChimneyImage.src = roofLeftChimneyImg;
 const roofLeftChimney: Roof = {
     img: roofLeftChimneyImage,
     type: "start",
-    chimney: 384,
+    chimney: 362,
 };
 
 const roofRightChimneyImage = new Image();
@@ -71,7 +71,7 @@ roofRightChimneyImage.src = roofRightChimneyImg;
 const roofRightChimney: Roof = {
     img: roofRightChimneyImage,
     type: "end",
-    chimney: 24,
+    chimney: 48,
 };
 
 const roofMiddleChimneyImage = new Image();
@@ -80,7 +80,7 @@ roofMiddleChimneyImage.src = roofMiddleChimneyImg;
 const roofMiddleChimney: Roof = {
     img: roofMiddleChimneyImage,
     type: "middle",
-    chimney: 188,
+    chimney: 185,
 };
 
 export {

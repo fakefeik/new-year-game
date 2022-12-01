@@ -32,6 +32,8 @@ const BASELINE = 400;
 export const SANTA_BASELINE = BASELINE - 66;
 export const CHIMNEY = SANTA_BASELINE - CHIMNEY_HEIGHT;
 export const LAVA = 1000;
+const INDENT = 64;
+const SLOPE_START = 256;
 
 export const state: GameState = {
     prev: null!,
@@ -47,21 +49,24 @@ export const state: GameState = {
 };
 
 export function currentMin(roof: RoofState) {
+    const pos = roof.pos - 256;
     if (roof.type == "start") {
-        if (roof.pos > 512 && roof.pos < 768) {
-            const y = roof.pos - 512;
+        if (pos > SLOPE_START && pos < roof.img.width - INDENT) {
+            const y = pos - SLOPE_START;
             return y + SANTA_BASELINE;
-        } else if (roof.pos > 768) {
+        } else if (pos > roof.img.width - INDENT) {
             return LAVA;
         }
     } else if (roof.type == "end") {
-        if (roof.pos > 256 && roof.pos < 512) {
-            const y = 512 - roof.pos
+        if (pos > INDENT && pos < SLOPE_START) {
+            const y = SLOPE_START - pos
             return y + SANTA_BASELINE;
+        } else if (pos < INDENT) {
+            return LAVA;
         }
     }
 
-    const current = 768 - roof.pos;
+    const current = 512 - pos;
     if (roof.chimney && current > roof.chimney && current < roof.chimney + CHIMNEY_WIDTH) {
         return CHIMNEY;
     }
