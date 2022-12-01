@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import type { RoofType, Roof } from "./img";
 import {
+    santaImg,
+    giftImg,
     roofLeftChimney,
     roofLeft,
     roofMiddleChimney,
@@ -19,7 +21,6 @@ interface Point {
     y: number;
 }
 
-
 interface RoofState {
     img: HTMLImageElement;
     type: RoofType;
@@ -27,6 +28,7 @@ interface RoofState {
 }
 
 interface SantaState {
+    img: HTMLImageElement;
     height: number;
 }
 
@@ -36,6 +38,9 @@ interface GameState {
     next: RoofState;
     santa: SantaState;
 }
+
+const BASELINE = 400;
+const SANTA_BASELINE = BASELINE - 66;
 
 const state: GameState = {
     prev: null!,
@@ -72,6 +77,10 @@ function setDefaultState() {
         type: "end",
         pos: 1280,
     };
+    state.santa = {
+        img: santaImg,
+        height: 330,
+    }
 }
 
 function between(min: number, max: number): number {
@@ -84,6 +93,25 @@ function nextRoof(prev: RoofType) {
 
 function drawImg(context: CanvasRenderingContext2D, p: Point, img: HTMLImageElement) {
     context.drawImage(img, p.x - img.width / 2, p.y - img.height / 2);
+
+    // debug
+    context.strokeStyle = "green";
+    context.strokeRect(p.x - img.width / 2, p.y - img.height / 2, img.width, img.height);
+}
+
+function currentMin(type: RoofType, pos: number) {
+    if (type == "start") {
+        if (pos > 512 && pos < 768) {
+            const y = pos - 512;
+            return y + SANTA_BASELINE;
+        }
+    } else if (type == "end") {
+        if (pos > 256 && pos < 512) {
+            const y = 512 - pos
+            return y + SANTA_BASELINE;
+        }
+    }
+    return SANTA_BASELINE;
 }
 
 export function Game({ width, height }: GameProps) {
@@ -99,10 +127,13 @@ export function Game({ width, height }: GameProps) {
         drawImg(context, { x: state.prev.pos, y: 400 }, state.prev.img);
         drawImg(context, { x: state.current.pos, y: 400 }, state.current.img);
         drawImg(context, { x: state.next.pos, y: 400 }, state.next.img);
+        drawImg(context, { x: 512, y: state.santa.height }, state.santa.img);
     };
 
     const update = (canvas: HTMLCanvasElement, previousTime: number, currentTime: number) => {
         if (state.prev.pos < -256) {
+            // console.info(state.current.pos);
+            // return;
             state.prev = state.current;
             state.current = state.next;
             state.next = {
@@ -110,6 +141,9 @@ export function Game({ width, height }: GameProps) {
                 pos: state.current.pos + 512,
             };
         }
+
+        state.santa.height = currentMin(state.current.type, state.current.pos);
+
         const dt = currentTime - previousTime;
         state.prev.pos -= dt * 0.3;
         state.current.pos -= dt * 0.3;
