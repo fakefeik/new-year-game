@@ -20,7 +20,7 @@ export function setDefaultState() {
 
 export function jump() {
     const floor = currentMin(state.current);
-    if (state.jumps >= 2 || state.santa.velocity == 0 && floor == LAVA) {
+    if (state.jumps >= 2 || state.santa.velocity === 0 && floor === LAVA) {
         return;
     }
     state.santa.velocity = state.jumps == 0 ? 10 : 7;

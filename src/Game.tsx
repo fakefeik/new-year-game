@@ -9,15 +9,13 @@ export interface GameProps {
 }
 
 const controls: {[key: string]: () => void} = {
-    'r': setDefaultState,
-    'к': setDefaultState,
-    'f': spawnGift,
-    'а': spawnGift,
-    ' ': jump,
+    'KeyR': setDefaultState,
+    'KeyF': spawnGift,
+    'Space': jump,
 }
 
 window.addEventListener('keydown', function (event) {
-    if (!controls[event.key]) {
+    if (!controls[event.code]) {
         return;
     }
 
@@ -25,7 +23,7 @@ window.addEventListener('keydown', function (event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    controls[event.key]();
+    controls[event.code]();
 });
 
 export function Game({width, height}: GameProps) {

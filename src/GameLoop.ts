@@ -7,11 +7,10 @@ import {
     roofMiddleChimney,
     roofRight,
     roofRightChimney,
-    santaDeadImg
 } from "./img";
 import type { Roof, RoofType } from "./img";
 
-import {CHIMNEY, currentMin, LAVA, SANTA_BASELINE} from "./GameState";
+import {CHIMNEY, currentMin, LAVA} from "./GameState";
 import type { GameState, Point } from "./GameState";
 
 const DEBUG = true;
@@ -41,7 +40,7 @@ function roofsDistance(next: RoofType) {
         return 0;
     }
 
-    return between(100, 500);
+    return between(100, 400);
 }
 
 function multiplyer(totalJumps: number) {
@@ -92,7 +91,7 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
 }
 
 export function update(state: GameState, previousTime: number, currentTime: number) {
-    if (state.gameOver || state.pause) {
+    if (state.gameOver) {
         state.presents = [];
         return;
     }
@@ -107,17 +106,15 @@ export function update(state: GameState, previousTime: number, currentTime: numb
         };
     }
 
-    state.presents = state.presents.filter(x => !state.gameOver && x.y <= CHIMNEY + 30);
+    state.presents = state.presents.filter(x => !state.gameOver && x.y <= CHIMNEY + 32);
 
     let dt = (currentTime - previousTime) * multiplyer(state.totalJumps);
-    dt *= 0.1;
     const floor = currentMin(state.current);
-    if (state.santa.height > floor || state.santa.height >= floor && floor < SANTA_BASELINE - 10) {
+    if (state.santa.height === LAVA || state.current.type === "start" && floor !== LAVA && state.santa.height > 540) {
+        state.santa.velocity = 0;
         state.gameOver = true;
-        state.santa.img = santaDeadImg;
         return;
     }
-
     if (state.santa.velocity != 0) {
         state.santa.height -= state.santa.velocity * dt * 0.1;
         state.santa.velocity -= dt * 0.02;
@@ -128,6 +125,8 @@ export function update(state: GameState, previousTime: number, currentTime: numb
         }
     } else if (floor === LAVA) {
         state.santa.velocity = -5;
+    } else if (floor === CHIMNEY) {
+        state.gameOver = true;
     } else {
         state.santa.height = floor;
     }

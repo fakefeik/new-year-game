@@ -1,4 +1,4 @@
-import {CHIMNEY_HEIGHT, CHIMNEY_WIDTH, Roof, roofLeft, roofMiddle, roofRightChimney, santaImg} from "./img";
+import {CHIMNEY_HEIGHT, CHIMNEY_WIDTH, Roof} from "./img";
 
 export interface Point {
     x: number;
@@ -31,7 +31,7 @@ export interface GameState {
 const BASELINE = 400;
 export const SANTA_BASELINE = BASELINE - 66;
 export const CHIMNEY = SANTA_BASELINE - CHIMNEY_HEIGHT;
-export const LAVA = 1000;
+export const LAVA = 768;
 const INDENT = 64;
 const SLOPE_START = 256;
 
