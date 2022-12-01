@@ -21,6 +21,7 @@ export interface GameState {
     next: RoofState;
     santa: SantaState;
     presents: Point[];
+    currentChimney?: null | number;
     score: number;
     jumps: number;
     gameOver: boolean;
@@ -35,18 +36,7 @@ export const LAVA = 768;
 const INDENT = 64;
 const SLOPE_START = 256;
 
-export const state: GameState = {
-    prev: null!,
-    current: null!,
-    next: null!,
-    santa: null!,
-    presents: [],
-    score: 0,
-    jumps: 0,
-    gameOver: false,
-    pause: false,
-    totalJumps: 0,
-};
+export const state = {} as GameState;
 
 export function currentMin(roof: RoofState) {
     const pos = roof.pos - 256;

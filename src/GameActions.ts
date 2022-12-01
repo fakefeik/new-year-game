@@ -16,6 +16,7 @@ export function setDefaultState() {
     state.gameOver = false;
     state.pause = false;
     state.totalJumps = 0;
+    state.currentChimney = null;
 }
 
 export function jump() {
@@ -31,6 +32,12 @@ export function jump() {
 export function spawnGift() {
     const floor = currentMin(state.current);
     if (floor == CHIMNEY && !state.gameOver) {
+        if (!state.currentChimney) {
+            state.currentChimney = 1;
+        } else {
+            state.currentChimney++;
+        }
+        state.score += 2;
         state.presents.push({
             x: 512,
             y: state.santa.height,

@@ -79,12 +79,13 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
         drawImg(context, { x: p.x, y: p.y }, giftImg);
     }
 
+    context.font = "bold 48px serif";
+    context.fillStyle = "rgb(255, 187, 57)";
+    context.fillText(`Score: ${state.score}`, 64, 64);
     if (DEBUG) {
-        context.font = "bold 48px serif";
-        context.fillStyle = "rgb(255, 187, 57)";
-        context.fillText(`currentMin:    ${currentMin(state.current)}`, 64, 64);
-        context.fillText(`currentPos:    ${state.current.pos}`, 64, 128);
-        context.fillText(`currentHeight: ${state.santa.height}`, 64, 200);
+        context.fillText(`currentMin:    ${currentMin(state.current)}`, 64, 128);
+        context.fillText(`currentPos:    ${state.current.pos}`, 64, 192);
+        context.fillText(`currentHeight: ${state.santa.height}`, 64, 256);
         const min = currentMin(state.current);
         context.fillRect(512 - 20, min + 64, 40, 4);
     }
@@ -115,6 +116,18 @@ export function update(state: GameState, previousTime: number, currentTime: numb
         state.gameOver = true;
         return;
     }
+
+    if (floor === CHIMNEY && !state.currentChimney) {
+        state.currentChimney = 0;
+    }
+
+    if (floor !== CHIMNEY) {
+        if (state.currentChimney === 0) {
+            state.score = Math.max(state.score - 1, 0);
+        }
+        state.currentChimney = null;
+    }
+
     if (state.santa.velocity != 0) {
         state.santa.height -= state.santa.velocity * dt * 0.1;
         state.santa.velocity -= dt * 0.02;
