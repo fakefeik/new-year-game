@@ -1,4 +1,4 @@
-import {roofLeft, roofMiddle, roofRightChimney, santaImg} from "./img";
+import {roofLeft, roofMiddle, roofRightChimney, santaWalk1Img} from "./img";
 import {CHIMNEY, currentMin, LAVA, state} from "./GameState";
 
 export function setDefaultState() {
@@ -6,7 +6,8 @@ export function setDefaultState() {
     state.current = {...roofMiddle, pos: 768};
     state.next = {...roofRightChimney, pos: 1280};
     state.santa = {
-        img: santaImg,
+        img: santaWalk1Img,
+        changeTime: 0,
         height: 330,
         velocity: 0,
     };

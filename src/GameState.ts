@@ -11,6 +11,7 @@ interface RoofState extends Roof {
 
 interface SantaState {
     img: HTMLImageElement;
+    changeTime: number;
     height: number;
     velocity: number;
 }

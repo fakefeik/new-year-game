@@ -1,5 +1,7 @@
 import gift from "./gift.png";
-import santa from "./santa.png";
+import santaWalk1 from "./santa_walk1.png";
+import santaWalk2 from "./santa_walk2.png";
+import santaJump from "./santa_jump.png";
 import santaDead from "./santa_dead.png";
 import background from "./background.png";
 import roofLeftImg from "./roof_left.png";
@@ -23,8 +25,14 @@ export interface Roof {
 const giftImg = new Image();
 giftImg.src = gift;
 
-const santaImg = new Image();
-santaImg.src = santa;
+const santaJumpImg = new Image();
+santaJumpImg.src = santaJump;
+
+const santaWalk1Img = new Image();
+santaWalk1Img.src = santaWalk1;
+
+const santaWalk2Img = new Image();
+santaWalk2Img.src = santaWalk2;
 
 const santaDeadImg = new Image();
 santaDeadImg.src = santaDead;
@@ -85,7 +93,9 @@ const roofMiddleChimney: Roof = {
 
 export {
     giftImg,
-    santaImg,
+    santaJumpImg,
+    santaWalk1Img,
+    santaWalk2Img,
     santaDeadImg,
     backgroundImg,
     roofLeft,

@@ -6,14 +6,14 @@ import {
     roofMiddle,
     roofMiddleChimney,
     roofRight,
-    roofRightChimney,
+    roofRightChimney, santaDeadImg, santaJumpImg, santaWalk1Img, santaWalk2Img,
 } from "./img";
 import type { Roof, RoofType } from "./img";
 
 import {CHIMNEY, currentMin, LAVA} from "./GameState";
 import type { GameState, Point } from "./GameState";
 
-const DEBUG = true;
+const DEBUG = false;
 
 const possibleRoofs: { [key in RoofType]: Roof[] } = {
     "start": [roofLeft, roofLeftChimney],
@@ -51,7 +51,7 @@ function multiplyer(totalJumps: number) {
     } else if (totalJumps < 50) {
         return 1.5;
     } else {
-        return 1.7;
+        return 1.8;
     }
 }
 
@@ -73,7 +73,7 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
     drawImg(context, {x: state.prev.pos, y: 400}, state.prev.img);
     drawImg(context, {x: state.current.pos, y: 400}, state.current.img, true);
     drawImg(context, {x: state.next.pos, y: 400}, state.next.img);
-    drawImg(context, {x: 512, y: state.santa.height}, state.santa.img);
+    drawImg(context, {x: 512, y: state.santa.height + 15}, state.santa.img);
 
     for (const p of state.presents) {
         drawImg(context, { x: p.x, y: p.y }, giftImg);
@@ -114,6 +114,7 @@ export function update(state: GameState, previousTime: number, currentTime: numb
     if (state.santa.height === LAVA || state.current.type === "start" && floor !== LAVA && state.santa.height > 540) {
         state.santa.velocity = 0;
         state.gameOver = true;
+        state.santa.img = santaDeadImg;
         return;
     }
 
@@ -129,10 +130,13 @@ export function update(state: GameState, previousTime: number, currentTime: numb
     }
 
     if (state.santa.velocity != 0) {
+        state.santa.img = santaJumpImg;
         state.santa.height -= state.santa.velocity * dt * 0.1;
         state.santa.velocity -= dt * 0.02;
         if (state.santa.height > floor) {
             state.santa.velocity = 0;
+            state.santa.img = santaWalk1Img;
+            state.santa.changeTime = currentTime;
             state.santa.height = floor;
             state.jumps = 0;
         }
@@ -140,8 +144,13 @@ export function update(state: GameState, previousTime: number, currentTime: numb
         state.santa.velocity = -5;
     } else if (floor === CHIMNEY) {
         state.gameOver = true;
+        state.santa.img = santaDeadImg;
     } else {
         state.santa.height = floor;
+        if (currentTime - state.santa.changeTime > 250 / multiplyer(state.totalJumps)) {
+            state.santa.changeTime = currentTime;
+            state.santa.img = state.santa.img === santaWalk1Img ? santaWalk2Img : santaWalk1Img;
+        }
     }
 
     state.prev.pos -= dt * 0.3;
