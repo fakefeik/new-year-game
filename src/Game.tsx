@@ -1,4 +1,4 @@
-import React, {isValidElement, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import type {RoofType, Roof} from "./img";
 import {
     santaImg,
@@ -13,58 +13,14 @@ import {
     CHIMNEY_HEIGHT,
     CHIMNEY_WIDTH
 } from "./img";
+import {CHIMNEY, currentMin, jump, Point, SANTA_BASELINE, setDefaultState, spawnGift, state} from "./GameState";
 
 export interface GameProps {
     width: number;
     height: number;
 }
 
-interface Point {
-    x: number;
-    y: number;
-}
-
-interface RoofState extends Roof {
-    pos: number;
-}
-
-interface SantaState {
-    img: HTMLImageElement;
-    height: number;
-    velocity: number;
-}
-
-interface GameState {
-    prev: RoofState;
-    current: RoofState;
-    next: RoofState;
-    santa: SantaState;
-    presents: Point[];
-    score: number;
-    jumps: number;
-    gameOver: boolean;
-    pause: boolean;
-    totalJumps: number;
-}
-
 const DEBUG = true;
-const BASELINE = 400;
-const SANTA_BASELINE = BASELINE - 66;
-const CHIMNEY = SANTA_BASELINE - CHIMNEY_HEIGHT;
-const LAVA = 1000;
-
-const state: GameState = {
-    prev: null!,
-    current: null!,
-    next: null!,
-    santa: null!,
-    presents: [],
-    score: 0,
-    jumps: 0,
-    gameOver: false,
-    pause: false,
-    totalJumps: 0,
-};
 
 const possibleRoofs: { [key in RoofType]: Roof[] } = {
     "start": [roofLeft, roofLeftChimney],
@@ -77,23 +33,6 @@ const possibleRoofsFor: { [key in RoofType]: Roof[] } = {
     "middle": [...possibleRoofs["middle"], ...possibleRoofs["end"]],
     "end": possibleRoofs["start"],
 };
-
-function setDefaultState() {
-    state.prev = {...roofLeft, pos: 256};
-    state.current = {...roofMiddle, pos: 768};
-    state.next = {...roofRightChimney, pos: 1280};
-    state.santa = {
-        img: santaImg,
-        height: 330,
-        velocity: 0,
-    };
-    state.presents = [];
-    state.score = 0;
-    state.jumps = 0;
-    state.gameOver = false;
-    state.pause = false;
-    state.totalJumps = 0;
-}
 
 function between(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min);
@@ -132,28 +71,25 @@ function multiplyer(totalJumps: number) {
     }
 }
 
-function currentMin(roof: RoofState) {
-    if (roof.type == "start") {
-        if (roof.pos > 512 && roof.pos < 768) {
-            const y = roof.pos - 512;
-            return y + SANTA_BASELINE;
-        } else if (roof.pos > 768) {
-            return LAVA;
-        }
-    } else if (roof.type == "end") {
-        if (roof.pos > 256 && roof.pos < 512) {
-            const y = 512 - roof.pos
-            return y + SANTA_BASELINE;
-        }
-    }
-
-    const current = 768 - roof.pos;
-    if (roof.chimney && current > roof.chimney && current < roof.chimney + CHIMNEY_WIDTH) {
-        return CHIMNEY;
-    }
-    return SANTA_BASELINE;
+const controls: {[key: string]: () => void} = {
+    'r': setDefaultState,
+    'к': setDefaultState,
+    'f': spawnGift,
+    'а': spawnGift,
+    ' ': jump,
 }
 
+window.addEventListener('keydown', function (event) {
+    if (!controls[event.key]) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    controls[event.key]();
+});
 export function Game({width, height}: GameProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const contextRef = useRef<CanvasRenderingContext2D>();
@@ -257,28 +193,7 @@ export function Game({width, height}: GameProps) {
         return () => cancelAnimationFrame(requestRef.current as number);
     }, []);
 
-    const shoot = (e: React.MouseEvent) => {
-        const floor = currentMin(state.current);
-        if (e.button == 2) {
-            if (floor == CHIMNEY) {
-                console.info("hEre")
-                state.presents.push({
-                    x: 512,
-                    y: state.santa.height,
-                });
-            }
-            return;
-        }
-
-        if (state.jumps >= 2 || state.santa.velocity == 0 && floor == LAVA) {
-            return;
-        }
-        state.santa.velocity = state.jumps == 0 ? 10 : 7;
-        state.jumps++;
-        state.totalJumps++;
-    }
-
     return (
-        <canvas onMouseUp={shoot} ref={canvasRef} style={{width, height}}/>
+        <canvas ref={canvasRef} style={{width, height}}/>
     );
 }
