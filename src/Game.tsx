@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import type { RoofType, Roof } from "./img";
+import React, {isValidElement, useEffect, useRef} from "react";
+import type {RoofType, Roof} from "./img";
 import {
     santaImg,
     giftImg,
@@ -30,6 +30,7 @@ interface RoofState {
 interface SantaState {
     img: HTMLImageElement;
     height: number;
+    velocity: number;
 }
 
 interface GameState {
@@ -37,6 +38,7 @@ interface GameState {
     current: RoofState;
     next: RoofState;
     santa: SantaState;
+    jumps: number;
 }
 
 const BASELINE = 400;
@@ -47,15 +49,16 @@ const state: GameState = {
     current: null!,
     next: null!,
     santa: null!,
+    jumps: 0,
 };
 
-const possibleRoofs: {[key in RoofType]: Roof[]} = {
+const possibleRoofs: { [key in RoofType]: Roof[] } = {
     "start": [roofLeft, roofLeftChimney],
     "middle": [roofMiddle, roofMiddleChimney],
     "end": [roofRight, roofRightChimney],
 };
 
-const possibleRoofsFor: {[key in RoofType]: Roof[]} = {
+const possibleRoofsFor: { [key in RoofType]: Roof[] } = {
     "start": [...possibleRoofs["middle"], ...possibleRoofs["end"]],
     "middle": possibleRoofs["end"],
     "end": possibleRoofs["start"],
@@ -80,7 +83,9 @@ function setDefaultState() {
     state.santa = {
         img: santaImg,
         height: 330,
-    }
+        velocity: 0,
+    };
+    state.jumps = 0;
 }
 
 function between(min: number, max: number): number {
@@ -114,7 +119,7 @@ function currentMin(type: RoofType, pos: number) {
     return SANTA_BASELINE;
 }
 
-export function Game({ width, height }: GameProps) {
+export function Game({width, height}: GameProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const contextRef = useRef<CanvasRenderingContext2D>();
     const requestRef = useRef<number>();
@@ -124,16 +129,14 @@ export function Game({ width, height }: GameProps) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "#fff";
         context.fillRect(0, 0, canvas.width, canvas.height);
-        drawImg(context, { x: state.prev.pos, y: 400 }, state.prev.img);
-        drawImg(context, { x: state.current.pos, y: 400 }, state.current.img);
-        drawImg(context, { x: state.next.pos, y: 400 }, state.next.img);
-        drawImg(context, { x: 512, y: state.santa.height }, state.santa.img);
+        drawImg(context, {x: state.prev.pos, y: 400}, state.prev.img);
+        drawImg(context, {x: state.current.pos, y: 400}, state.current.img);
+        drawImg(context, {x: state.next.pos, y: 400}, state.next.img);
+        drawImg(context, {x: 512, y: state.santa.height}, state.santa.img);
     };
 
     const update = (canvas: HTMLCanvasElement, previousTime: number, currentTime: number) => {
         if (state.prev.pos < -256) {
-            // console.info(state.current.pos);
-            // return;
             state.prev = state.current;
             state.current = state.next;
             state.next = {
@@ -142,9 +145,21 @@ export function Game({ width, height }: GameProps) {
             };
         }
 
-        state.santa.height = currentMin(state.current.type, state.current.pos);
-
         const dt = currentTime - previousTime;
+
+        const floor = currentMin(state.current.type, state.current.pos);
+        if (state.santa.velocity != 0) {
+            state.santa.height -= state.santa.velocity * dt * 0.1;
+            state.santa.velocity -= dt * 0.03;
+            if (state.santa.height > floor) {
+                state.santa.velocity = 0;
+                state.santa.height = floor;
+                state.jumps = 0;
+            }
+        } else {
+            state.santa.height = floor;
+        }
+
         state.prev.pos -= dt * 0.3;
         state.current.pos -= dt * 0.3;
         state.next.pos -= dt * 0.3;
@@ -173,7 +188,15 @@ export function Game({ width, height }: GameProps) {
         return () => cancelAnimationFrame(requestRef.current as number);
     }, []);
 
+    const shoot = (e: React.MouseEvent) => {
+        if (state.jumps >= 2) {
+            return;
+        }
+        state.santa.velocity = 10;
+        state.jumps++;
+    }
+
     return (
-        <canvas ref={canvasRef} style={{ width, height }} />
+        <canvas onMouseUp={shoot} ref={canvasRef} style={{width, height}}/>
     );
 }
