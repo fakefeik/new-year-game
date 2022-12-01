@@ -15,7 +15,7 @@ interface SantaState {
     velocity: number;
 }
 
-interface GameState {
+export interface GameState {
     prev: RoofState;
     current: RoofState;
     next: RoofState;
@@ -31,7 +31,7 @@ interface GameState {
 const BASELINE = 400;
 export const SANTA_BASELINE = BASELINE - 66;
 export const CHIMNEY = SANTA_BASELINE - CHIMNEY_HEIGHT;
-const LAVA = 1000;
+export const LAVA = 1000;
 
 export const state: GameState = {
     prev: null!,
@@ -45,23 +45,6 @@ export const state: GameState = {
     pause: false,
     totalJumps: 0,
 };
-
-export function setDefaultState() {
-    state.prev = {...roofLeft, pos: 256};
-    state.current = {...roofMiddle, pos: 768};
-    state.next = {...roofRightChimney, pos: 1280};
-    state.santa = {
-        img: santaImg,
-        height: 330,
-        velocity: 0,
-    };
-    state.presents = [];
-    state.score = 0;
-    state.jumps = 0;
-    state.gameOver = false;
-    state.pause = false;
-    state.totalJumps = 0;
-}
 
 export function currentMin(roof: RoofState) {
     if (roof.type == "start") {
@@ -83,25 +66,4 @@ export function currentMin(roof: RoofState) {
         return CHIMNEY;
     }
     return SANTA_BASELINE;
-}
-
-export function jump() {
-    const floor = currentMin(state.current);
-    if (state.jumps >= 2 || state.santa.velocity == 0 && floor == LAVA) {
-        return;
-    }
-    state.santa.velocity = state.jumps == 0 ? 10 : 7;
-    state.jumps++;
-    state.totalJumps++;
-}
-
-export function spawnGift() {
-    const floor = currentMin(state.current);
-    if (floor == CHIMNEY) {
-        console.info("hEre")
-        state.presents.push({
-            x: 512,
-            y: state.santa.height,
-        });
-    }
 }

@@ -1,6 +1,7 @@
 import gift from "./gift.png";
 import santa from "./santa.png";
 import santaDead from "./santa_dead.png";
+import background from "./background.png";
 import roofLeftImg from "./roof_left.png";
 import roofRightImg from "./roof_right.png";
 import roofMiddleImg from "./roof_middle.png";
@@ -27,6 +28,9 @@ santaImg.src = santa;
 
 const santaDeadImg = new Image();
 santaDeadImg.src = santaDead;
+
+const backgroundImg = new Image();
+backgroundImg.src = background;
 
 const roofLeftImage = new Image();
 roofLeftImage.src = roofLeftImg;
@@ -83,6 +87,7 @@ export {
     giftImg,
     santaImg,
     santaDeadImg,
+    backgroundImg,
     roofLeft,
     roofRight,
     roofMiddle,
