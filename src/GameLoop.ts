@@ -66,7 +66,7 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
     context.fillStyle = "#2B3280";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    drawImg(context, { x: backgroundImg.width / 2, y: backgroundImg.height / 2 }, backgroundImg)
+    drawImg(context, { x: state.background.width / 2, y: state.background.height / 2 }, state.background)
     drawImg(context, {x: state.prev.pos, y: 400}, state.prev.img);
     drawImg(context, {x: state.current.pos, y: 400}, state.current.img, true);
     drawImg(context, {x: state.next.pos, y: 400}, state.next.img);

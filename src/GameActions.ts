@@ -1,4 +1,4 @@
-import {gifts, roofLeft, roofMiddle, roofRightChimney, santaWalk1Img} from "./img";
+import {backgroundImg, gifts, roofLeft, roofMiddle, roofRightChimney, santaWalk1Img} from "./img";
 import {CHIMNEY, currentMin, LAVA, state} from "./GameState";
 import {between} from "./GameLoop";
 
@@ -12,6 +12,7 @@ export function setDefaultState() {
         height: 330,
         velocity: 0,
     };
+    state.background = backgroundImg;
     state.presents = [];
     state.score = 0;
     state.jumps = 0;
@@ -22,8 +23,11 @@ export function setDefaultState() {
 }
 
 export function debug() {
-    console.info(state.debug);
     state.debug = !state.debug;
+}
+
+export function changeBackground(img: HTMLImageElement) {
+    return () => state.background = img;
 }
 
 export function jump() {

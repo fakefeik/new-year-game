@@ -5,6 +5,8 @@ import santaWalk2 from "./santa_walk2.png";
 import santaJump from "./santa_jump.png";
 import santaDead from "./santa_dead.png";
 import background from "./background.png";
+import background2 from "./background2.png";
+import background3 from "./background3.png";
 import roofLeftImg from "./roof_left.png";
 import roofRightImg from "./roof_right.png";
 import roofMiddleImg from "./roof_middle.png";
@@ -45,6 +47,12 @@ santaDeadImg.src = santaDead;
 
 const backgroundImg = new Image();
 backgroundImg.src = background;
+
+const background2Img = new Image();
+background2Img.src = background2;
+
+const background3Img = new Image();
+background3Img.src = background3;
 
 const roofLeftImage = new Image();
 roofLeftImage.src = roofLeftImg;
@@ -104,6 +112,8 @@ export {
     santaWalk2Img,
     santaDeadImg,
     backgroundImg,
+    background2Img,
+    background3Img,
     roofLeft,
     roofRight,
     roofMiddle,

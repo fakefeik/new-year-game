@@ -26,6 +26,7 @@ export interface GameState {
     next: RoofState;
     santa: SantaState;
     presents: Gift[];
+    background: HTMLImageElement;
     currentChimney?: null | number;
     score: number;
     jumps: number;
