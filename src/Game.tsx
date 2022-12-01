@@ -39,6 +39,7 @@ interface GameState {
     current: RoofState;
     next: RoofState;
     santa: SantaState;
+    presents: Point[];
     score: number;
     jumps: number;
     gameOver: boolean;
@@ -49,12 +50,15 @@ interface GameState {
 const DEBUG = true;
 const BASELINE = 400;
 const SANTA_BASELINE = BASELINE - 66;
+const CHIMNEY = SANTA_BASELINE - CHIMNEY_HEIGHT;
+const LAVA = 1000;
 
 const state: GameState = {
     prev: null!,
     current: null!,
     next: null!,
     santa: null!,
+    presents: [],
     score: 0,
     jumps: 0,
     gameOver: false,
@@ -75,14 +79,15 @@ const possibleRoofsFor: { [key in RoofType]: Roof[] } = {
 };
 
 function setDefaultState() {
-    state.prev = {...roofLeft, pos: 256 };
-    state.current = { ...roofMiddleChimney, pos: 768 };
-    state.next = { ...roofRight, pos: 1280 };
+    state.prev = {...roofLeft, pos: 256};
+    state.current = {...roofMiddle, pos: 768};
+    state.next = {...roofRightChimney, pos: 1280};
     state.santa = {
         img: santaImg,
         height: 330,
         velocity: 0,
     };
+    state.presents = [];
     state.score = 0;
     state.jumps = 0;
     state.gameOver = false;
@@ -133,7 +138,7 @@ function currentMin(roof: RoofState) {
             const y = roof.pos - 512;
             return y + SANTA_BASELINE;
         } else if (roof.pos > 768) {
-            return 1000;
+            return LAVA;
         }
     } else if (roof.type == "end") {
         if (roof.pos > 256 && roof.pos < 512) {
@@ -144,7 +149,7 @@ function currentMin(roof: RoofState) {
 
     const current = 768 - roof.pos;
     if (roof.chimney && current > roof.chimney && current < roof.chimney + CHIMNEY_WIDTH) {
-        return SANTA_BASELINE - CHIMNEY_HEIGHT;
+        return CHIMNEY;
     }
     return SANTA_BASELINE;
 }
@@ -159,10 +164,15 @@ export function Game({width, height}: GameProps) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "#fff";
         context.fillRect(0, 0, canvas.width, canvas.height);
+
         drawImg(context, {x: state.prev.pos, y: 400}, state.prev.img);
         drawImg(context, {x: state.current.pos, y: 400}, state.current.img, true);
         drawImg(context, {x: state.next.pos, y: 400}, state.next.img);
         drawImg(context, {x: 512, y: state.santa.height}, state.santa.img);
+
+        for (const p of state.presents) {
+            drawImg(context, { x: p.x, y: p.y }, giftImg);
+        }
 
         if (DEBUG) {
             context.font = "bold 48px serif";
@@ -190,6 +200,8 @@ export function Game({width, height}: GameProps) {
             };
         }
 
+        state.presents = state.presents.filter(x => x.y <= CHIMNEY + 30);
+
         let dt = (currentTime - previousTime) * multiplyer(state.totalJumps);
         const floor = currentMin(state.current);
         if (state.santa.height > floor + 10 || state.santa.height >= floor && floor < SANTA_BASELINE - 10) {
@@ -215,6 +227,11 @@ export function Game({width, height}: GameProps) {
         state.prev.pos -= dt * 0.3;
         state.current.pos -= dt * 0.3;
         state.next.pos -= dt * 0.3;
+
+        for (let p of state.presents) {
+            p.x -= dt * 0.3;
+            p.y += dt * 0.3;
+        }
     };
 
     const animate = (time: number) => {
@@ -241,13 +258,19 @@ export function Game({width, height}: GameProps) {
     }, []);
 
     const shoot = (e: React.MouseEvent) => {
+        const floor = currentMin(state.current);
         if (e.button == 2) {
-            e.preventDefault();
-            state.pause = !state.pause;
+            if (floor == CHIMNEY) {
+                console.info("hEre")
+                state.presents.push({
+                    x: 512,
+                    y: state.santa.height,
+                });
+            }
             return;
         }
 
-        if (state.jumps >= 2 || state.santa.velocity == 0 && currentMin(state.current) == 1000) {
+        if (state.jumps >= 2 || state.santa.velocity == 0 && floor == LAVA) {
             return;
         }
         state.santa.velocity = state.jumps == 0 ? 10 : 7;
