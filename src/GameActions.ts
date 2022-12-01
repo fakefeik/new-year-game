@@ -1,5 +1,6 @@
-import {roofLeft, roofMiddle, roofRightChimney, santaWalk1Img} from "./img";
+import {gifts, roofLeft, roofMiddle, roofRightChimney, santaWalk1Img} from "./img";
 import {CHIMNEY, currentMin, LAVA, state} from "./GameState";
+import {between} from "./GameLoop";
 
 export function setDefaultState() {
     state.prev = {...roofLeft, pos: 256};
@@ -15,9 +16,14 @@ export function setDefaultState() {
     state.score = 0;
     state.jumps = 0;
     state.gameOver = false;
-    state.pause = false;
+    state.debug = false;
     state.totalJumps = 0;
     state.currentChimney = null;
+}
+
+export function debug() {
+    console.info(state.debug);
+    state.debug = !state.debug;
 }
 
 export function jump() {
@@ -40,8 +46,10 @@ export function spawnGift() {
         }
         state.score += 2;
         state.presents.push({
+            img: gifts[between(0, gifts.length)],
             x: 512,
             y: state.santa.height,
         });
     }
 }
+

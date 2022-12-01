@@ -1,4 +1,5 @@
 import gift from "./gift.png";
+import gift2 from "./gift2.png";
 import santaWalk1 from "./santa_walk1.png";
 import santaWalk2 from "./santa_walk2.png";
 import santaJump from "./santa_jump.png";
@@ -24,6 +25,11 @@ export interface Roof {
 
 const giftImg = new Image();
 giftImg.src = gift;
+
+const gift2Img = new Image();
+gift2Img.src = gift2;
+
+const gifts = [giftImg, gift2Img];
 
 const santaJumpImg = new Image();
 santaJumpImg.src = santaJump;
@@ -92,7 +98,7 @@ const roofMiddleChimney: Roof = {
 };
 
 export {
-    giftImg,
+    gifts,
     santaJumpImg,
     santaWalk1Img,
     santaWalk2Img,

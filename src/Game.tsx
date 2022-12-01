@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {jump, setDefaultState, spawnGift} from "./GameActions";
+import {debug, jump, setDefaultState, spawnGift} from "./GameActions";
 import {render, update} from "./GameLoop";
 import {state} from "./GameState";
 
@@ -10,6 +10,7 @@ export interface GameProps {
 
 const controls: {[key: string]: () => void} = {
     'KeyR': setDefaultState,
+    'BracketLeft': debug,
     'KeyF': spawnGift,
     'Space': jump,
 }

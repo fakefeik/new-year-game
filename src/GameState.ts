@@ -9,6 +9,10 @@ interface RoofState extends Roof {
     pos: number;
 }
 
+interface Gift extends Point {
+    img: HTMLImageElement,
+}
+
 interface SantaState {
     img: HTMLImageElement;
     changeTime: number;
@@ -21,12 +25,12 @@ export interface GameState {
     current: RoofState;
     next: RoofState;
     santa: SantaState;
-    presents: Point[];
+    presents: Gift[];
     currentChimney?: null | number;
     score: number;
     jumps: number;
     gameOver: boolean;
-    pause: boolean;
+    debug: boolean;
     totalJumps: number;
 }
 

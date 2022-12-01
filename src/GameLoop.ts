@@ -1,6 +1,5 @@
 import {
     backgroundImg,
-    giftImg,
     roofLeft,
     roofLeftChimney,
     roofMiddle,
@@ -10,10 +9,8 @@ import {
 } from "./img";
 import type { Roof, RoofType } from "./img";
 
-import {CHIMNEY, currentMin, LAVA} from "./GameState";
+import {CHIMNEY, currentMin, LAVA, state} from "./GameState";
 import type { GameState, Point } from "./GameState";
-
-const DEBUG = false;
 
 const possibleRoofs: { [key in RoofType]: Roof[] } = {
     "start": [roofLeft, roofLeftChimney],
@@ -27,7 +24,7 @@ const possibleRoofsFor: { [key in RoofType]: Roof[] } = {
     "end": possibleRoofs["start"],
 };
 
-function between(min: number, max: number): number {
+export function between(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
@@ -58,7 +55,7 @@ function multiplyer(totalJumps: number) {
 function drawImg(context: CanvasRenderingContext2D, p: Point, img: HTMLImageElement, current?: boolean) {
     context.drawImage(img, p.x - img.width / 2, p.y - img.height / 2);
 
-    if (DEBUG) {
+    if (state.debug) {
         context.strokeStyle = current ? "red" : "green";
         context.strokeRect(p.x - img.width / 2, p.y - img.height / 2, img.width, img.height);
     }
@@ -76,13 +73,13 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
     drawImg(context, {x: 512, y: state.santa.height + 15}, state.santa.img);
 
     for (const p of state.presents) {
-        drawImg(context, { x: p.x, y: p.y }, giftImg);
+        drawImg(context, p, p.img);
     }
 
     context.font = "bold 48px serif";
     context.fillStyle = "rgb(255, 187, 57)";
     context.fillText(`Score: ${state.score}`, 64, 64);
-    if (DEBUG) {
+    if (state.debug) {
         context.fillText(`currentMin:    ${currentMin(state.current)}`, 64, 128);
         context.fillText(`currentPos:    ${state.current.pos}`, 64, 192);
         context.fillText(`currentHeight: ${state.santa.height}`, 64, 256);
