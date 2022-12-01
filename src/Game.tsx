@@ -8,7 +8,10 @@ import {
     roofMiddleChimney,
     roofMiddle,
     roofRightChimney,
-    roofRight, santaDeadImg
+    roofRight,
+    santaDeadImg,
+    CHIMNEY_HEIGHT,
+    CHIMNEY_WIDTH
 } from "./img";
 
 export interface GameProps {
@@ -36,9 +39,11 @@ interface GameState {
     current: RoofState;
     next: RoofState;
     santa: SantaState;
+    score: number;
     jumps: number;
     gameOver: boolean;
     pause: boolean;
+    totalJumps: number;
 }
 
 const DEBUG = true;
@@ -50,9 +55,11 @@ const state: GameState = {
     current: null!,
     next: null!,
     santa: null!,
+    score: 0,
     jumps: 0,
     gameOver: false,
     pause: false,
+    totalJumps: 0,
 };
 
 const possibleRoofs: { [key in RoofType]: Roof[] } = {
@@ -76,9 +83,11 @@ function setDefaultState() {
         height: 330,
         velocity: 0,
     };
+    state.score = 0;
     state.jumps = 0;
     state.gameOver = false;
     state.pause = false;
+    state.totalJumps = 0;
 }
 
 function between(min: number, max: number): number {
@@ -106,6 +115,18 @@ function drawImg(context: CanvasRenderingContext2D, p: Point, img: HTMLImageElem
     }
 }
 
+function multiplyer(totalJumps: number) {
+    if (totalJumps < 10) {
+        return 1;
+    } else if (totalJumps < 20) {
+        return 1.2;
+    } else if (totalJumps < 50) {
+        return 1.5;
+    } else {
+        return 1.7;
+    }
+}
+
 function currentMin(roof: RoofState) {
     if (roof.type == "start") {
         if (roof.pos > 512 && roof.pos < 768) {
@@ -120,9 +141,10 @@ function currentMin(roof: RoofState) {
             return y + SANTA_BASELINE;
         }
     }
-    if (roof.chimney && roof.pos + roof.chimney > 256 ) {
-        // console.info(roof.chimney);
-        // console.info(roof.pos);
+
+    const current = 768 - roof.pos;
+    if (roof.chimney && current > roof.chimney && current < roof.chimney + CHIMNEY_WIDTH) {
+        return SANTA_BASELINE - CHIMNEY_HEIGHT;
     }
     return SANTA_BASELINE;
 }
@@ -168,12 +190,9 @@ export function Game({width, height}: GameProps) {
             };
         }
 
-        let dt = currentTime - previousTime;
-        dt *= 0.3;
-
+        let dt = (currentTime - previousTime) * multiplyer(state.totalJumps);
         const floor = currentMin(state.current);
-
-        if (state.santa.height > floor + 10) {
+        if (state.santa.height > floor + 10 || state.santa.height >= floor && floor < SANTA_BASELINE - 10) {
             state.gameOver = true;
             state.santa.img = santaDeadImg;
             return;
@@ -222,7 +241,6 @@ export function Game({width, height}: GameProps) {
     }, []);
 
     const shoot = (e: React.MouseEvent) => {
-        console.info(e);
         if (e.button == 2) {
             e.preventDefault();
             state.pause = !state.pause;
@@ -232,8 +250,9 @@ export function Game({width, height}: GameProps) {
         if (state.jumps >= 2 || state.santa.velocity == 0 && currentMin(state.current) == 1000) {
             return;
         }
-        state.santa.velocity = 10;
+        state.santa.velocity = state.jumps == 0 ? 10 : 7;
         state.jumps++;
+        state.totalJumps++;
     }
 
     return (
