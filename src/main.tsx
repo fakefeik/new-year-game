@@ -4,6 +4,6 @@ import {Game} from "./Game";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <Game width={640} height={480} />
+      <Game width={1600} height={768} />
   </React.StrictMode>
 )
