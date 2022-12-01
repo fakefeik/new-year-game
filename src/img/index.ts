@@ -1,38 +1,75 @@
 import gift from "./gift.png";
-import roofLeft from "./roof_left.png";
-import roofRight from "./roof_right.png";
-import roofMiddle from "./roof_middle.png";
-import roofLeftChimney from "./roof_left_chimney.png";
-import roofRightChimney from "./roof_right_chimney.png";
-import roofMiddleChimney from "./roof_middle_chimney.png";
+import roofLeftImg from "./roof_left.png";
+import roofRightImg from "./roof_right.png";
+import roofMiddleImg from "./roof_middle.png";
+import roofLeftChimneyImg from "./roof_left_chimney.png";
+import roofRightChimneyImg from "./roof_right_chimney.png";
+import roofMiddleChimneyImg from "./roof_middle_chimney.png";
+
+export type RoofType = "start" | "middle" | "end";
+
+export interface Roof {
+    img: HTMLImageElement,
+    type: RoofType,
+}
 
 const giftImg = new Image();
 giftImg.src = gift;
 
-const roofLeftImg = new Image();
-roofLeftImg.src = roofLeft;
+const roofLeftImage = new Image();
+roofLeftImage.src = roofLeftImg;
 
-const roofRightImg = new Image();
-roofRightImg.src = roofRight;
+const roofLeft: Roof = {
+    img: roofLeftImage,
+    type: "start",
+};
 
-const roofMiddleImg = new Image();
-roofMiddleImg.src = roofMiddle;
+const roofRightImage = new Image();
+roofRightImage.src = roofRightImg;
 
-const roofLeftChimneyImg = new Image();
-roofLeftChimneyImg.src = roofLeftChimney;
+const roofRight: Roof = {
+    img: roofRightImage,
+    type: "end",
+};
 
-const roofRightChimneyImg = new Image();
-roofRightChimneyImg.src = roofRightChimney;
+const roofMiddleImage = new Image();
+roofMiddleImage.src = roofMiddleImg;
 
-const roofMiddleChimneyImg = new Image();
-roofMiddleChimneyImg.src = roofMiddleChimney;
+const roofMiddle: Roof = {
+    img: roofMiddleImage,
+    type: "middle",
+};
+
+const roofLeftChimneyImage = new Image();
+roofLeftChimneyImage.src = roofLeftChimneyImg;
+
+const roofLeftChimney: Roof = {
+    img: roofLeftChimneyImage,
+    type: "start",
+};
+
+const roofRightChimneyImage = new Image();
+roofRightChimneyImage.src = roofRightChimneyImg;
+
+const roofRightChimney: Roof = {
+    img: roofRightChimneyImage,
+    type: "end",
+};
+
+const roofMiddleChimneyImage = new Image();
+roofMiddleChimneyImage.src = roofMiddleChimneyImg;
+
+const roofMiddleChimney: Roof = {
+    img: roofMiddleChimneyImage,
+    type: "middle",
+};
 
 export {
     giftImg,
-    roofLeftImg,
-    roofRightImg,
-    roofMiddleImg,
-    roofLeftChimneyImg,
-    roofRightChimneyImg,
-    roofMiddleChimneyImg,
+    roofLeft,
+    roofRight,
+    roofMiddle,
+    roofLeftChimney,
+    roofRightChimney,
+    roofMiddleChimney,
 };

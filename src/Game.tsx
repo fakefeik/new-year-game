@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from "react";
+import type { RoofType, Roof } from "./img";
 import {
-    roofLeftChimneyImg,
-    roofLeftImg,
-    roofMiddleChimneyImg,
-    roofMiddleImg,
-    roofRightChimneyImg,
-    roofRightImg
+    roofLeftChimney,
+    roofLeft,
+    roofMiddleChimney,
+    roofMiddle,
+    roofRightChimney,
+    roofRight
 } from "./img";
 
 export interface GameProps {
@@ -18,8 +19,10 @@ interface Point {
     y: number;
 }
 
+
 interface RoofState {
     img: HTMLImageElement;
+    type: RoofType;
     pos: number;
 }
 
@@ -41,26 +44,32 @@ const state: GameState = {
     santa: null!,
 };
 
-const possibleRoofs = [
-    roofLeftImg,
-    roofRightImg,
-    roofMiddleImg,
-    roofLeftChimneyImg,
-    roofRightChimneyImg,
-    roofMiddleChimneyImg,
-];
+const possibleRoofs: {[key in RoofType]: Roof[]} = {
+    "start": [roofLeft, roofLeftChimney],
+    "middle": [roofMiddle, roofMiddleChimney],
+    "end": [roofRight, roofRightChimney],
+};
+
+const possibleRoofsFor: {[key in RoofType]: Roof[]} = {
+    "start": [...possibleRoofs["middle"], ...possibleRoofs["end"]],
+    "middle": possibleRoofs["end"],
+    "end": possibleRoofs["start"],
+};
 
 function setDefaultState() {
     state.prev = {
-        img: roofLeftImg,
+        img: roofLeft.img,
+        type: "start",
         pos: 256,
     };
     state.current = {
-        img: roofMiddleChimneyImg,
+        img: roofMiddleChimney.img,
+        type: "middle",
         pos: 768,
     };
     state.next = {
-        img: roofRightImg,
+        img: roofRight.img,
+        type: "end",
         pos: 1280,
     };
 }
@@ -69,8 +78,8 @@ function between(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-function nextRoof() {
-    return possibleRoofs[between(0, possibleRoofs.length)];
+function nextRoof(prev: RoofType) {
+    return possibleRoofsFor[prev][between(0, possibleRoofsFor[prev].length)];
 }
 
 function drawImg(context: CanvasRenderingContext2D, p: Point, img: HTMLImageElement) {
@@ -97,7 +106,7 @@ export function Game({ width, height }: GameProps) {
             state.prev = state.current;
             state.current = state.next;
             state.next = {
-                img: nextRoof(),
+                ...nextRoof(state.current.type),
                 pos: state.current.pos + 512,
             };
         }
