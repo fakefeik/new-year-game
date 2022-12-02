@@ -26,10 +26,6 @@ export function debug() {
     state.debug = !state.debug;
 }
 
-export function changeBackground(img: HTMLImageElement) {
-    return () => state.background = img;
-}
-
 export function jump() {
     const floor = currentMin(state.current);
     if (state.jumps >= 2 || state.santa.velocity === 0 && floor === LAVA) {

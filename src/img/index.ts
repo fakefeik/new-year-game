@@ -1,12 +1,14 @@
-import gift from "./gift.png";
+import gift1 from "./gift1.png";
 import gift2 from "./gift2.png";
+import gift3 from "./gift3.png";
+import gift4 from "./gift4.png";
+import gift5 from "./gift5.png";
+import gift6 from "./gift6.png";
 import santaWalk1 from "./santa_walk1.png";
 import santaWalk2 from "./santa_walk2.png";
 import santaJump from "./santa_jump.png";
 import santaDead from "./santa_dead.png";
 import background from "./background.png";
-import background2 from "./background2.png";
-import background3 from "./background3.png";
 import roofLeftImg from "./roof_left.png";
 import roofRightImg from "./roof_right.png";
 import roofMiddleImg from "./roof_middle.png";
@@ -25,13 +27,25 @@ export interface Roof {
     chimney?: null | number;
 }
 
-const giftImg = new Image();
-giftImg.src = gift;
+const gift1Img = new Image();
+gift1Img.src = gift1;
 
 const gift2Img = new Image();
 gift2Img.src = gift2;
 
-const gifts = [giftImg, gift2Img];
+const gift3Img = new Image();
+gift3Img.src = gift3;
+
+const gift4Img = new Image();
+gift4Img.src = gift4;
+
+const gift5Img = new Image();
+gift5Img.src = gift5;
+
+const gift6Img = new Image();
+gift6Img.src = gift6;
+
+const gifts = [gift1Img, gift2Img, gift3Img, gift4Img, gift5Img, gift6Img];
 
 const santaJumpImg = new Image();
 santaJumpImg.src = santaJump;
@@ -47,12 +61,6 @@ santaDeadImg.src = santaDead;
 
 const backgroundImg = new Image();
 backgroundImg.src = background;
-
-const background2Img = new Image();
-background2Img.src = background2;
-
-const background3Img = new Image();
-background3Img.src = background3;
 
 const roofLeftImage = new Image();
 roofLeftImage.src = roofLeftImg;
@@ -112,8 +120,6 @@ export {
     santaWalk2Img,
     santaDeadImg,
     backgroundImg,
-    background2Img,
-    background3Img,
     roofLeft,
     roofRight,
     roofMiddle,

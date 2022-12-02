@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from "react";
-import {changeBackground, debug, jump, setDefaultState, spawnGift} from "./GameActions";
+import {debug, jump, setDefaultState, spawnGift} from "./GameActions";
 import {render, update} from "./GameLoop";
 import {state} from "./GameState";
-import {background2Img, background3Img, backgroundImg} from "./img";
+import {backgroundImg} from "./img";
 
 export interface GameProps {
     width: number;
@@ -14,9 +14,6 @@ const controls: {[key: string]: () => void} = {
     'BracketLeft': debug,
     'KeyF': spawnGift,
     'Space': jump,
-    'Digit1': changeBackground(backgroundImg),
-    'Digit2': changeBackground(background2Img),
-    'Digit3': changeBackground(background3Img),
 }
 
 window.addEventListener('keydown', function (event) {
