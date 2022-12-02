@@ -76,6 +76,16 @@ export function render(canvas: HTMLCanvasElement, context: CanvasRenderingContex
         drawImg(context, p, p.img);
     }
 
+    if (state.gameOver) {
+        context.font = "bold 80px serif";
+        context.fillStyle = "rgb(209, 63, 49)";
+        context.fillText(`Game over`, 330, 200);
+
+        context.font = "bold 36px serif";
+        context.fillStyle = "rgb(246,117,57)";
+        context.fillText(`Press 'R' to restart`, 380, 260);
+    }
+
     context.font = "bold 48px serif";
     context.fillStyle = "rgb(255, 187, 57)";
     context.fillText(`Score: ${state.score}`, 64, 64);
